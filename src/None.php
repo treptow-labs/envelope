@@ -17,6 +17,11 @@ class None extends Option
         return is_callable($callable) ? call_user_func($callable) : $callable;
     }
 
+    public function map(callable $callable): Option
+    {
+        return $this;
+    }
+
     public static function make(): None
     {
         return new None;

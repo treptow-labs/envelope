@@ -4,6 +4,7 @@ namespace TreptowLabs\Envelope\Tests;
 
 use PHPUnit\Framework\TestCase;
 use TreptowLabs\Envelope\None;
+use TreptowLabs\Envelope\Some;
 
 class NoneTest extends TestCase
 {
@@ -23,5 +24,12 @@ class NoneTest extends TestCase
     public function testReturnsValueOfCallableForUnwrapOr()
     {
         $this->assertEquals('default', (new None)->unwrapOr(fn () => 'default'));
+    }
+
+    public function testMapReturnsSelf()
+    {
+        $instance = new None;
+
+        $this->assertTrue($instance->map(fn ($v) => Some::make('test'))->isNone());
     }
 }

@@ -22,6 +22,8 @@ abstract class Option
      */
     abstract public function unwrapOr(mixed $callable);
 
+    abstract public function map(callable $callable): Option;
+
     /**
      * @phpstan-assert-if-true Some<TContents> $this
      */

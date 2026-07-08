@@ -3,6 +3,7 @@
 namespace TreptowLabs\Envelope\Tests;
 
 use PHPUnit\Framework\TestCase;
+use TreptowLabs\Envelope\None;
 use TreptowLabs\Envelope\Some;
 
 class SomeTest extends TestCase
@@ -20,5 +21,17 @@ class SomeTest extends TestCase
     public function testReturnsInternalValueForUnwrapOrWithCallable()
     {
         $this->assertEquals('default', Some::make('default')->unwrapOr(fn () => 'not default'));
+    }
+
+    public function testCanMapInternalValueToAnotherOption()
+    {
+        $value = Some::make('default');
+
+        $value = $value->map(fn ($v) => new Some($v.'2'));
+        $this->assertTrue($value->isSome());
+        $this->assertEquals('default2', $value->unwrap());
+
+        $value = $value->map(fn ($v) => None::make());
+        $this->assertTrue($value->isNone());
     }
 }
