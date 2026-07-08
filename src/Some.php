@@ -33,19 +33,19 @@ class Some extends Option
     }
 
     /**
-     * @template TCallableReturn of Option
+     * @template TCallableReturn
      *
-     * @param  callable(TSomeValue):TCallableReturn  $callable
-     * @return TCallableReturn
+     * @param  callable(TSomeValue):Option<TCallableReturn>|TCallableReturn  $callable
+     * @return Option<TCallableReturn>
      */
     public function map(callable $callable): Option
     {
         $value = $callable($this->value);
-        if (! $value instanceof Option) {
-            throw new \InvalidArgumentException('Callable must return Some / None');
+        if($value instanceof Option) {
+            return $value;
         }
 
-        return $value;
+        return Option::from($value);
     }
 
     /**
