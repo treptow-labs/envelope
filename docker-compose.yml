@@ -1,0 +1,6 @@
+services:
+  test-environment:
+    image: serversideup/php:8.3-fpm-nginx
+    container_name: test_environment
+    volumes:
+      - .:/var/www/html

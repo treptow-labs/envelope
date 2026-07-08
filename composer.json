@@ -1,0 +1,32 @@
+{
+  "name": "treptow-labs/envelope",
+  "description": "A PHP data transfer object library with support similar to the Rust Option type.",
+  "autoload": {
+    "psr-4": {
+      "TreptowLabs\\Envelope\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TreptowLabs\\Envelope\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Bennett Treptow",
+      "email": "bennett@treptowlabs.com"
+    }
+  ],
+  "scripts": {
+    "test": "./vendor/bin/phpunit tests",
+    "lint": "./vendor/bin/pint"
+  },
+  "require": {
+    "php": "^8.3.0",
+    "illuminate/contracts": "^10.0 || ^11.0 || ^12.0 || ^13.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.5",
+    "laravel/pint": "^1.29"
+  }
+}
