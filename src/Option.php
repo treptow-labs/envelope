@@ -1,11 +1,11 @@
 <?php
 
-namespace TreptowLabs\Envelope\Contents;
+namespace TreptowLabs\Envelope;
 
 /**
  * @template-covariant TContents
  */
-abstract class Contents
+abstract class Option
 {
     /**
      * @return TContents
@@ -44,7 +44,7 @@ abstract class Contents
      *
      * @param  TInputValue  $value
      * @param  TNoneValue  $noneValue
-     * @return (TInputValue is TNoneValue ? None : Some<TInputValue>)
+     * @return Some
      */
     public static function from(mixed $value, mixed $noneValue = null): self
     {

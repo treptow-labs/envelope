@@ -5,8 +5,6 @@ namespace TreptowLabs\Envelope;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
-use TreptowLabs\Envelope\Contents\Contents;
-use TreptowLabs\Envelope\Contents\Some;
 use TreptowLabs\Envelope\Modifiers\MutatesKey;
 use TreptowLabs\Envelope\Modifiers\MutatesValue;
 
@@ -21,7 +19,7 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
             $key = Some::make($property->getName());
             $value = $property->getValue($this);
 
-            if ($value instanceof Contents) {
+            if ($value instanceof Option) {
                 if ($value->isNone()) {
                     continue;
                 }

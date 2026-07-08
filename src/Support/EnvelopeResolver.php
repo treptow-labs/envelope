@@ -3,10 +3,10 @@
 namespace TreptowLabs\Envelope\Support;
 
 use Closure;
-use TreptowLabs\Envelope\Contents\Contents;
-use TreptowLabs\Envelope\Contents\None;
-use TreptowLabs\Envelope\Contents\Some;
 use TreptowLabs\Envelope\Exceptions\UnresolvableValueException;
+use TreptowLabs\Envelope\None;
+use TreptowLabs\Envelope\Option;
+use TreptowLabs\Envelope\Some;
 
 class EnvelopeResolver
 {
@@ -21,9 +21,9 @@ class EnvelopeResolver
      * @template TExpectedType
      *
      * @param  (Closure(mixed): TExpectedType)|null  $callback
-     * @return ($callback is Closure ? Contents<TExpectedType> : Contents<mixed>)
+     * @return ($callback is Closure ? Option<TExpectedType> : Option<mixed>)
      */
-    public function get(string $key, ?Closure $callback = null): Contents
+    public function get(string $key, ?Closure $callback = null): Option
     {
         if (array_key_exists($key, $this->data)) {
             $value = $this->data[$key];
@@ -38,9 +38,9 @@ class EnvelopeResolver
     }
 
     /**
-     * @return ($nullable is true ? Contents<bool|null> : Contents<bool>)
+     * @return ($nullable is true ? Option<bool|null> : Option<bool>)
      */
-    public function boolean(string $key, bool $nullable = true, bool $throw = false): Contents
+    public function boolean(string $key, bool $nullable = true, bool $throw = false): Option
     {
         return $this->get($key, function ($value) use ($key, $throw, $nullable) {
             if (! is_null($value)) {
@@ -57,15 +57,15 @@ class EnvelopeResolver
         });
     }
 
-    public function booleanOrThrow(string $key, bool $nullable = false): Contents
+    public function booleanOrThrow(string $key, bool $nullable = false): Option
     {
         return $this->boolean($key, $nullable, true);
     }
 
     /**
-     * @return ($nullable is true ? Contents<string|null> : Contents<string>)
+     * @return ($nullable is true ? Option<string|null> : Option<string>)
      */
-    public function string(string $key, bool $nullable = true, bool $throw = false): Contents
+    public function string(string $key, bool $nullable = true, bool $throw = false): Option
     {
         return $this->get($key, function ($value) use ($key, $throw, $nullable) {
             if (! is_null($value)) {
@@ -86,15 +86,15 @@ class EnvelopeResolver
         });
     }
 
-    public function stringOrThrow(string $key, bool $nullable = false): Contents
+    public function stringOrThrow(string $key, bool $nullable = false): Option
     {
         return $this->string($key, $nullable, true);
     }
 
     /**
-     * @return ($nullable is true ? Contents<int|null> : Contents<int>)
+     * @return ($nullable is true ? Option<int|null> : Option<int>)
      */
-    public function int(string $key, bool $nullable = true, bool $throw = false): Contents
+    public function int(string $key, bool $nullable = true, bool $throw = false): Option
     {
         return $this->get($key, function ($value) use ($key, $nullable, $throw) {
             if (! is_null($value)) {
@@ -111,25 +111,25 @@ class EnvelopeResolver
         });
     }
 
-    public function intOrThrow(string $key, bool $nullable = false): Contents
+    public function intOrThrow(string $key, bool $nullable = false): Option
     {
         return $this->int($key, $nullable, true);
     }
 
-    public function integer(string $key, bool $nullable = true, bool $throw = false): Contents
+    public function integer(string $key, bool $nullable = true, bool $throw = false): Option
     {
         return $this->int($key, $nullable, $throw);
     }
 
-    public function integerOrThrow(string $key, bool $nullable = false): Contents
+    public function integerOrThrow(string $key, bool $nullable = false): Option
     {
         return $this->int($key, $nullable, true);
     }
 
     /**
-     * @return ($nullable is true ? Contents<float|null> : Contents<float>)
+     * @return ($nullable is true ? Option<float|null> : Option<float>)
      */
-    public function float(string $key, bool $nullable = true, bool $throw = false): Contents
+    public function float(string $key, bool $nullable = true, bool $throw = false): Option
     {
         return $this->get($key, function ($value) use ($key, $nullable, $throw) {
             if (! is_null($value)) {
@@ -146,7 +146,7 @@ class EnvelopeResolver
         });
     }
 
-    public function floatOrThrow(string $key, bool $nullable = false): Contents
+    public function floatOrThrow(string $key, bool $nullable = false): Option
     {
         return $this->float($key, $nullable, true);
     }
@@ -155,9 +155,9 @@ class EnvelopeResolver
      * @template TEnum of \BackedEnum
      *
      * @param  class-string<TEnum>  $enumClass
-     * @return ($nullable is true ? Contents<TEnum|null> : Contents<TEnum>)
+     * @return ($nullable is true ? Option<TEnum|null> : Option<TEnum>)
      */
-    public function enum(string $key, string $enumClass, bool $nullable = true): Contents
+    public function enum(string $key, string $enumClass, bool $nullable = true): Option
     {
         return $this->get($key, function ($value) use ($key, $enumClass, $nullable) {
             if ($value !== null) {
@@ -181,9 +181,9 @@ class EnvelopeResolver
     }
 
     /**
-     * @return ($nullable is true ? Contents<array|null> : Contents<array>)
+     * @return ($nullable is true ? Option<array|null> : Option<array>)
      */
-    public function array(string $key, bool $nullable = true, bool $throw = false): Contents
+    public function array(string $key, bool $nullable = true, bool $throw = false): Option
     {
         return $this->get($key, function ($value) use ($key, $nullable, $throw) {
             if (! is_null($value)) {
@@ -200,7 +200,7 @@ class EnvelopeResolver
         });
     }
 
-    public function arrayOrThrow(string $key, bool $nullable = false): Contents
+    public function arrayOrThrow(string $key, bool $nullable = false): Option
     {
         return $this->array($key, $nullable, true);
     }

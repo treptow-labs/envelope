@@ -1,27 +1,27 @@
 <?php
 
-namespace TreptowLabs\Envelope\Tests\Contents;
+namespace TreptowLabs\Envelope\Tests;
 
 use PHPUnit\Framework\TestCase;
-use TreptowLabs\Envelope\Contents\Contents;
-use TreptowLabs\Envelope\Contents\None;
-use TreptowLabs\Envelope\Contents\Some;
+use TreptowLabs\Envelope\None;
+use TreptowLabs\Envelope\Option;
+use TreptowLabs\Envelope\Some;
 
-class ContentsTest extends TestCase
+class OptionTest extends TestCase
 {
     public function testCanCreateNewInstanceFromValue()
     {
-        $contents = Contents::from(null);
+        $contents = Option::from(null);
         $this->assertInstanceOf(None::class, $contents);
         $this->assertFalse($contents->isSome());
         $this->assertTrue($contents->isNone());
 
-        $contents = Contents::from(null, '');
+        $contents = Option::from(null, '');
         $this->assertInstanceOf(Some::class, $contents);
         $this->assertTrue($contents->isSome());
         $this->assertFalse($contents->isNone());
 
-        $contents = Contents::from('test');
+        $contents = Option::from('test');
         $this->assertInstanceOf(Some::class, $contents);
         $this->assertTrue($contents->isSome());
         $this->assertFalse($contents->isNone());

@@ -2,12 +2,12 @@
 
 namespace TreptowLabs\Envelope\Modifiers;
 
-use TreptowLabs\Envelope\Contents\Contents;
+use TreptowLabs\Envelope\Option;
 
 interface MutatesValue
 {
     /**
-     * @param  Contents<array-key>  $key
+     * @param  Option<array-key>  $key
      */
-    public function mutateValue(Contents $key, mixed $value): mixed;
+    public function mutateValue(Option $key, mixed $value): mixed;
 }

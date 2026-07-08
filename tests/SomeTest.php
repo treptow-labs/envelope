@@ -1,9 +1,9 @@
 <?php
 
-namespace TreptowLabs\Envelope\Tests\Contents;
+namespace TreptowLabs\Envelope\Tests;
 
 use PHPUnit\Framework\TestCase;
-use TreptowLabs\Envelope\Contents\Some;
+use TreptowLabs\Envelope\Some;
 
 class SomeTest extends TestCase
 {

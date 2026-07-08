@@ -7,12 +7,12 @@ use PHPUnit\Framework\TestCase;
 use TreptowLabs\Envelope\Attributes\FormatUsing;
 use TreptowLabs\Envelope\Attributes\MapsTo;
 use TreptowLabs\Envelope\Attributes\Omit;
-use TreptowLabs\Envelope\Contents\Contents;
-use TreptowLabs\Envelope\Contents\None;
-use TreptowLabs\Envelope\Contents\Some;
 use TreptowLabs\Envelope\Envelope;
 use TreptowLabs\Envelope\Formatters\DateTimeFormatter;
 use TreptowLabs\Envelope\Formatters\StringFormatter;
+use TreptowLabs\Envelope\None;
+use TreptowLabs\Envelope\Option;
+use TreptowLabs\Envelope\Some;
 
 class EnvelopeTest extends TestCase
 {
@@ -21,9 +21,9 @@ class EnvelopeTest extends TestCase
         $envelope = new class(Some::make('value'), Some::make('value2'), Some::make('value3'), 'value4') extends Envelope
         {
             public function __construct(
-                public readonly Contents $property,
-                protected readonly Contents $property2,
-                private readonly Contents $property3,
+                public readonly Option $property,
+                protected readonly Option $property2,
+                private readonly Option $property3,
                 public readonly string $property4
             ) {}
         };
@@ -39,9 +39,9 @@ class EnvelopeTest extends TestCase
         $envelope = new class(Some::make('value'), property3: Some::make('value2')) extends Envelope
         {
             public function __construct(
-                public readonly Contents $property,
-                public readonly Contents $property2 = new None,
-                public readonly Contents $property3 = new None,
+                public readonly Option $property,
+                public readonly Option $property2 = new None,
+                public readonly Option $property3 = new None,
             ) {}
         };
 
@@ -57,10 +57,10 @@ class EnvelopeTest extends TestCase
         {
             public function __construct(
                 #[MapsTo('new_property')]
-                public readonly Contents $property,
-                public readonly Contents $property2 = new None,
+                public readonly Option $property,
+                public readonly Option $property2 = new None,
                 #[Omit]
-                public readonly Contents $property3 = new None,
+                public readonly Option $property3 = new None,
             ) {}
         };
 
@@ -73,11 +73,11 @@ class EnvelopeTest extends TestCase
         {
             public function __construct(
                 #[FormatUsing(StringFormatter::class)]
-                public readonly Contents $property,
+                public readonly Option $property,
                 #[FormatUsing(DateTimeFormatter::class)]
-                public readonly Contents $property2 = new None,
+                public readonly Option $property2 = new None,
                 #[FormatUsing(DateTimeFormatter::class, 'Y-m-d')]
-                public readonly Contents $property3 = new None,
+                public readonly Option $property3 = new None,
             ) {}
         };
 
@@ -91,11 +91,11 @@ class EnvelopeTest extends TestCase
             public function __construct(
                 #[FormatUsing(StringFormatter::class)]
                 #[MapsTo('new_property')]
-                public readonly Contents $property,
-                public readonly Contents $property2 = new None,
+                public readonly Option $property,
+                public readonly Option $property2 = new None,
                 #[FormatUsing(DateTimeFormatter::class, 'Y-m-d')]
                 #[MapsTo('property')]
-                public readonly Contents $property3 = new None,
+                public readonly Option $property3 = new None,
             ) {}
         };
 

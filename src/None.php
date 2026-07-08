@@ -1,11 +1,11 @@
 <?php
 
-namespace TreptowLabs\Envelope\Contents;
+namespace TreptowLabs\Envelope;
 
 /**
- * @extends Contents<null>
+ * @extends Option<null>
  */
-class None extends Contents
+class None extends Option
 {
     public function unwrap()
     {

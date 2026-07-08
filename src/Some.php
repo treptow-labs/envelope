@@ -1,13 +1,13 @@
 <?php
 
-namespace TreptowLabs\Envelope\Contents;
+namespace TreptowLabs\Envelope;
 
 /**
  * @template TSomeValue
  *
- * @extends  Contents<TSomeValue>
+ * @extends  Option<TSomeValue>
  */
-class Some extends Contents
+class Some extends Option
 {
     /**
      * @param  TSomeValue  $value

@@ -4,8 +4,8 @@ namespace TreptowLabs\Envelope\Tests\Support;
 
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
-use TreptowLabs\Envelope\Contents\None;
-use TreptowLabs\Envelope\Contents\Some;
+use TreptowLabs\Envelope\None;
+use TreptowLabs\Envelope\Some;
 use TreptowLabs\Envelope\Support\EnvelopeResolver;
 
 class EnvelopeResolverTest extends TestCase
@@ -92,7 +92,8 @@ class EnvelopeResolverTest extends TestCase
     #[TestWith(['z', null])]
     #[TestWith(['', null])]
     #[TestWith([null, null])]
-    public function testCanResolveEnum(mixed $value, mixed $expected){
+    public function testCanResolveEnum(mixed $value, mixed $expected)
+    {
         $resolver = EnvelopeResolver::make(['key' => $value]);
 
         $this->assertSame($expected, $resolver->enum('key', TestEnum::class)->unwrap());
@@ -101,7 +102,8 @@ class EnvelopeResolverTest extends TestCase
     #[TestWith(['z'])]
     #[TestWith(['A'])]
     #[TestWith(['AB'])]
-    public function testThrowsErrorWhenResolvingEnumWithoutNullable(mixed $value){
+    public function testThrowsErrorWhenResolvingEnumWithoutNullable(mixed $value)
+    {
         $resolver = EnvelopeResolver::make(['key' => $value]);
 
         $this->expectExceptionMessage('Unresolvable value provided for [key]');
@@ -114,26 +116,30 @@ class EnvelopeResolverTest extends TestCase
     #[TestWith(['1', 1.0])]
     #[TestWith([null, null])]
     #[TestWith(['', 0.0])]
-    public function testCanResolveFloat(mixed $value, mixed $expected){
+    public function testCanResolveFloat(mixed $value, mixed $expected)
+    {
         $resolver = EnvelopeResolver::make(['key' => $value]);
         $this->assertSame($expected, $resolver->float('key')->unwrap());
     }
 
     #[TestWith(['', 0.0])]
     #[TestWith([null, 0.0])]
-    public function testCanResolveFloatWithNotNull(mixed $value, mixed $expected){
+    public function testCanResolveFloatWithNotNull(mixed $value, mixed $expected)
+    {
         $resolver = EnvelopeResolver::make(['key' => $value]);
         $this->assertSame($expected, $resolver->float('key', false)->unwrap());
     }
 
-    public function testThrowsErrorWhenResolvingFloatWithoutNullable(){
+    public function testThrowsErrorWhenResolvingFloatWithoutNullable()
+    {
         $resolver = EnvelopeResolver::make(['key' => null]);
         $this->expectExceptionMessage('Unresolvable value provided for [key]');
         $resolver->float('key', false, true);
     }
 }
 
-enum TestEnum: string {
+enum TestEnum: string
+{
     case A = 'a';
     case B = 'b';
 }

@@ -2,9 +2,9 @@
 
 namespace TreptowLabs\Envelope\Attributes;
 
-use TreptowLabs\Envelope\Contents\Contents;
 use TreptowLabs\Envelope\Formatters\Formatter;
 use TreptowLabs\Envelope\Modifiers\MutatesValue;
+use TreptowLabs\Envelope\Option;
 
 /**
  * @template TInput
@@ -28,7 +28,7 @@ class FormatUsing implements MutatesValue
         $this->arguments = $arguments;
     }
 
-    public function mutateValue(Contents $key, mixed $value): mixed
+    public function mutateValue(Option $key, mixed $value): mixed
     {
         return $this->make()->format($value);
     }
