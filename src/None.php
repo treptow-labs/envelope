@@ -2,6 +2,8 @@
 
 namespace TreptowLabs\Envelope;
 
+use TreptowLabs\Envelope\Exceptions\UnwrapException;
+
 /**
  * @extends Option<null>
  */
@@ -9,7 +11,7 @@ class None extends Option
 {
     public function unwrap()
     {
-        throw new \RuntimeException('Attempted to call [unwrap] on a [None] value. Use [unwrapOr] instead.');
+        throw new UnwrapException();
     }
 
     public function unwrapOr(mixed $callable): mixed

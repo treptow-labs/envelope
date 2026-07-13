@@ -52,15 +52,15 @@ $present->isSome(); // true
 $absent->isNone();  // true
 
 $present->unwrap();      // 'Jane'
-$absent->unwrap();       // throws \RuntimeException — None has nothing to unwrap
+$absent->unwrap();       // throws \RuntimeException, None has nothing to unwrap
 $absent->unwrapOr('N/A'); // 'N/A'
-$absent->unwrapOr(fn () => 'N/A'); // 'N/A' — callables are also accepted
+$absent->unwrapOr(fn () => 'N/A'); // 'N/A', callables are also accepted
 
 $present->map(fn ($name) => strtoupper($name)); // Some('JANE')
-$absent->map(fn ($name) => strtoupper($name));  // still None — map is a no-op on None
+$absent->map(fn ($name) => strtoupper($name));  // still None, map is a no-op on None
 ```
 
-You can also build an `Option` from a raw value plus a sentinel that counts as "none":
+You can also build an `Option` from a raw value, optionally providing a sentinel that counts as "none":
 
 ```php
 Option::from('Jane');       // Some('Jane')
@@ -92,14 +92,14 @@ $dto = new UpdateUserDto(
 
 $dto->toArray();
 // ['name' => 'Jane', 'isActive' => null]
-// 'bio' is completely absent from the array — it was never touched
+// 'bio' is completely absent from the array, it was never touched
 ```
 
-Notice that `isActive` is present with a value of `null` — that's the "explicitly cleared" case — while `bio` doesn't appear at all, because it was never provided.
+Notice that `isActive` is present with a value of `null` (the "explicitly cleared" case) while `bio` doesn't appear at all, because it was never provided.
 
 ## Populating a DTO from request data: `EnvelopeResolver`
 
-`EnvelopeResolver` wraps a raw array (e.g. `$request->validated()`) and gives you typed accessors that return `Option` — `Some` if the key was present in the array, `None` if it wasn't:
+`EnvelopeResolver` wraps a raw array (e.g. `$request->validated()`) and gives you typed accessors that return `Some` if the key was present in the array, `None` if it wasn't:
 
 ```php
 use TreptowLabs\Envelope\Support\EnvelopeResolver;
@@ -115,15 +115,15 @@ $dto = new UpdateUserDto(
 
 Available accessors, all following the same pattern:
 
-| Method | Returns |
-|---|---|
-| `get(string $key, ?Closure $callback = null)` | Raw value, optionally transformed by `$callback` |
-| `string(string $key, bool $nullable = true, bool $throw = false)` | Cast to `string` |
-| `int(string $key, ...)` / `integer(...)` | Cast to `int` |
-| `float(string $key, ...)` | Cast to `float` |
-| `boolean(string $key, ...)` | Cast via `FILTER_VALIDATE_BOOLEAN` |
-| `array(string $key, ...)` | Cast to `array` |
-| `enum(string $key, string $enumClass, bool $nullable = true)` | Resolved via `$enumClass::tryFrom()` |
+| Method | Returns                                                   |
+|---|-----------------------------------------------------------|
+| `get(string $key, ?Closure $callback = null)` | Raw value, optionally transformed by `$callback`          |
+| `string(string $key, bool $nullable = true, bool $throw = false)` | Cast to `string`                                          |
+| `int(string $key, ...)` / `integer(...)` | Cast to `int`                                             |
+| `float(string $key, ...)` | Cast to `float`                                           |
+| `boolean(string $key, ...)` | Cast via `FILTER_VALIDATE_BOOLEAN`                        |
+| `array(string $key, ...)` | Cast to `array`                                           |
+| `enum(string $key, string $enumClass, bool $nullable = true)` | An instance of `$enumClass`,  via `$enumClass::tryFrom()` |
 
 Each of these:
 
@@ -132,7 +132,7 @@ Each of these:
 - Returns `Some($castValue)` if the key is present with a non-null value.
 - If the key is present, the value is `null`, and `$nullable` is `false`: either returns a type-appropriate empty value (`''`, `0`, `0.0`, `false`, `[]`) or throws `UnresolvableValueException`, depending on `$throw`.
 
-Every accessor has an `...OrThrow` sibling (`stringOrThrow`, `intOrThrow`/`integerOrThrow`, `floatOrThrow`, `booleanOrThrow`, `arrayOrThrow`) that's shorthand for calling it with `nullable: false, throw: true` — useful for fields that were provided but must not resolve to null:
+Every accessor has an `...OrThrow` sibling (`stringOrThrow`, `intOrThrow`/`integerOrThrow`, `floatOrThrow`, `booleanOrThrow`, `arrayOrThrow`) that's shorthand for calling it with `nullable: false, throw: true`; useful for fields that were provided but must not resolve to null:
 
 ```php
 $resolver->stringOrThrow('email');
@@ -143,7 +143,7 @@ $resolver->stringOrThrow('email');
 
 Three attributes let you control how a property is serialized without touching your update logic.
 
-### `#[MapsTo]` — rename the output key
+### `#[MapsTo]` - rename the output key
 
 ```php
 use TreptowLabs\Envelope\Attributes\MapsTo;
@@ -157,7 +157,7 @@ class UpdateUserDto extends Envelope
 }
 ```
 
-### `#[Omit]` — always exclude a property from toArray output
+### `#[Omit]` - always exclude a property from toArray output
 
 Useful for properties you need on the DTO for internal logic but never want serialized, regardless of whether they're `Some` or `None`:
 
@@ -174,7 +174,7 @@ class UpdateUserDto extends Envelope
 }
 ```
 
-### `#[FormatUsing]` — transform the value before it's output
+### `#[FormatUsing]` - transform the value before it's output
 
 Pass a `Formatter` class (and any constructor arguments it needs):
 
@@ -193,8 +193,8 @@ class UpdateEventDto extends Envelope
 
 Envelope ships with two formatters out of the box:
 
-- **`DateTimeFormatter`** — formats a `DateTimeInterface` value to a string (defaults to `DateTimeInterface::ATOM`); non-`DateTimeInterface` values pass through unchanged.
-- **`StringFormatter`** — safely casts a value to `string`, passing `null` through as `null` and calling `__toString()` on `Stringable` objects.
+- **`DateTimeFormatter`** - formats a `DateTimeInterface` value to a string (defaults to `DateTimeInterface::ATOM`); non-`DateTimeInterface` values pass through unchanged.
+- **`StringFormatter`** - safely casts a value to `string`, passing `null` through as `null` and calling `__toString()` on `Stringable` objects.
 
 You can write your own by implementing the `Formatter` interface:
 
@@ -236,8 +236,8 @@ class UpdateUserDto extends Envelope
 
         return new self(
             name: $resolver->string('name'),
-            isActive: $resolver->boolean('isActive'),
-            verifiedAt: $resolver->get('verifiedAt', fn ($v) => $v ? new \DateTimeImmutable($v) : null),
+            isActive: $resolver->boolean('is_active'),
+            verifiedAt: $resolver->get('verified_at', fn ($v) => $v ? new \DateTimeImmutable($v) : null),
         );
     }
 }
@@ -251,6 +251,15 @@ public function update(Request $request, User $user)
 
     return $user;
 }
-```
 
-Send `{"name": "Jane"}` and only `name` is touched. Send `{"isActive": null}` and `is_active` is set to `null` in the database while everything else is left alone. No manual `array_key_exists` checks, no "dirty field" tracking — the DTO's shape does it for you.
+// Example requests:
+PATCH /users/123
+{"name": "Jane"}
+
+- Only `name` is updated; `is_active` and `verified_at` are untouched
+
+PATCH /users/123
+{"verified_at": null}
+
+- `verified_at` is set to `null`; `name` and `is_active` are untouched
+```
