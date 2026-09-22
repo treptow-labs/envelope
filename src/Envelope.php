@@ -10,7 +10,7 @@ use TreptowLabs\Envelope\Modifiers\MutatesValue;
 
 abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
 {
-    /** @var array<class-string, array<int, array{name: string, attributes: array<int, object>}>> */
+    /** @var array<int, array{property: \ReflectionProperty, attributes: \ReflectionAttribute[]}> */
     protected static array $propertyMetadataCache = [];
 
     public function toArray(): array
@@ -50,7 +50,7 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
         return $output;
     }
 
-    /** @return array<int, array{name: string, attributes: array<int, object>}> */
+    /** @return array<int, array{property: \ReflectionProperty, attributes: \ReflectionAttribute[]}> */
     protected static function propertyMetadata(): array
     {
         return self::$propertyMetadataCache[static::class] ??= array_map(
