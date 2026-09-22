@@ -10,14 +10,16 @@ use TreptowLabs\Envelope\Modifiers\MutatesValue;
 
 abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
 {
+    /** @var array<int, array{property: \ReflectionProperty, attributes: \ReflectionAttribute[]}> */
+    protected static array $propertyMetadataCache = [];
+
     public function toArray(): array
     {
-        $publicProperties = (new \ReflectionClass($this))->getProperties(\ReflectionProperty::IS_PUBLIC);
-
         $output = [];
-        foreach ($publicProperties as $property) {
-            $key = Some::make($property->getName());
-            $value = $property->getValue($this);
+
+        foreach (static::propertyMetadata() as $property) {
+            $key = Some::make($property['property']->getName());
+            $value = $property['property']->getValue($this);
 
             if ($value instanceof Option) {
                 if ($value->isNone()) {
@@ -26,7 +28,7 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
                 $value = $value->unwrap();
             }
 
-            foreach ($property->getAttributes() as $attribute) {
+            foreach ($property['attributes'] as $attribute) {
                 $instance = $attribute->newInstance();
                 if ($instance instanceof MutatesKey) {
                     $key = $instance->mutateKey($key, $value);
@@ -39,10 +41,25 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
             if ($key->isNone()) {
                 continue;
             }
+            if ($value instanceof Arrayable) {
+                $value = $value->toArray();
+            }
             $output[$key->unwrap()] = $value;
         }
 
         return $output;
+    }
+
+    /** @return array<int, array{property: \ReflectionProperty, attributes: \ReflectionAttribute[]}> */
+    protected static function propertyMetadata(): array
+    {
+        return self::$propertyMetadataCache[static::class] ??= array_map(
+            static fn (\ReflectionProperty $property): array => [
+                'property' => $property,
+                'attributes' => $property->getAttributes(),
+            ],
+            (new \ReflectionClass(static::class))->getProperties(\ReflectionProperty::IS_PUBLIC)
+        );
     }
 
     public function jsonSerialize(): array

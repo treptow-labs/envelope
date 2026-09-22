@@ -11,7 +11,7 @@ class None extends Option
 {
     public function unwrap()
     {
-        throw new UnwrapException();
+        throw new UnwrapException;
     }
 
     public function unwrapOr(mixed $callable): mixed
