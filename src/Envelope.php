@@ -18,8 +18,8 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
         $output = [];
 
         foreach (static::propertyMetadata() as $property) {
-            $key = Some::make($property['name']);
-            $value = $this->{$property['name']};
+            $key = Some::make($property['property']->getName());
+            $value = $property['property']->getValue($this);
 
             if ($value instanceof Option) {
                 if ($value->isNone()) {
@@ -28,7 +28,8 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
                 $value = $value->unwrap();
             }
 
-            foreach ($property['attributes'] as $instance) {
+            foreach ($property['attributes'] as $attribute) {
+                $instance = $attribute->newInstance();
                 if ($instance instanceof MutatesKey) {
                     $key = $instance->mutateKey($key, $value);
                 }
@@ -54,11 +55,8 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
     {
         return self::$propertyMetadataCache[static::class] ??= array_map(
             static fn (\ReflectionProperty $property): array => [
-                'name' => $property->getName(),
-                'attributes' => array_map(
-                    static fn (\ReflectionAttribute $attribute): object => $attribute->newInstance(),
-                    $property->getAttributes()
-                ),
+                'property' => $property,
+                'attributes' => $property->getAttributes(),
             ],
             (new \ReflectionClass(static::class))->getProperties(\ReflectionProperty::IS_PUBLIC)
         );

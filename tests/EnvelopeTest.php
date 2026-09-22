@@ -128,19 +128,24 @@ class EnvelopeTest extends TestCase
     {
         $envelope = new class(Some::make('value')) extends Envelope
         {
-            public function __construct(public readonly Option $property) {}
+            public function __construct(
+                #[MapsTo('new_property')]
+                public readonly Option $property
+            ) {}
         };
 
         $cache = new \ReflectionProperty(Envelope::class, 'propertyMetadataCache');
 
-        $this->assertSame(['property' => 'value'], $envelope->toArray());
+        $this->assertSame(['new_property' => 'value'], $envelope->toArray());
 
         $cachedMetadata = $cache->getValue();
         $this->assertArrayHasKey($envelope::class, $cachedMetadata);
         $this->assertCount(1, $cachedMetadata[$envelope::class]);
-        $this->assertSame('property', $cachedMetadata[$envelope::class][0]['name']);
+        $this->assertSame('property', $cachedMetadata[$envelope::class][0]['property']->getName());
+        $this->assertCount(1, $cachedMetadata[$envelope::class][0]['attributes']);
+        $this->assertInstanceOf(MapsTo::class, $cachedMetadata[$envelope::class][0]['attributes'][0]->newInstance());
 
-        $this->assertSame(['property' => 'value'], $envelope->toArray());
+        $this->assertSame(['new_property' => 'value'], $envelope->toArray());
         $this->assertSame($cachedMetadata, $cache->getValue());
     }
 }
