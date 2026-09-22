@@ -123,4 +123,24 @@ class EnvelopeTest extends TestCase
             ],
         ], $envelope->toArray());
     }
+
+    public function testToArrayCachesReflectedPropertiesPerClass()
+    {
+        $envelope = new class(Some::make('value')) extends Envelope
+        {
+            public function __construct(public readonly Option $property) {}
+        };
+
+        $cache = new \ReflectionProperty(Envelope::class, 'propertyMetadataCache');
+
+        $this->assertSame(['property' => 'value'], $envelope->toArray());
+
+        $cachedMetadata = $cache->getValue();
+        $this->assertArrayHasKey($envelope::class, $cachedMetadata);
+        $this->assertCount(1, $cachedMetadata[$envelope::class]);
+        $this->assertSame('property', $cachedMetadata[$envelope::class][0]['name']);
+
+        $this->assertSame(['property' => 'value'], $envelope->toArray());
+        $this->assertSame($cachedMetadata, $cache->getValue());
+    }
 }
