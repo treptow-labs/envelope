@@ -31,7 +31,7 @@ class SomeTest extends TestCase
         $this->assertTrue($value->isSome());
         $this->assertEquals('default2', $value->unwrap());
 
-        $value = $value->map(fn($v) => Some::make($v.'2'));
+        $value = $value->map(fn ($v) => Some::make($v.'2'));
         $this->assertTrue($value->isSome());
         $this->assertEquals('default22', $value->unwrap());
 

@@ -39,6 +39,9 @@ abstract class Envelope implements Arrayable, Jsonable, JsonSerializable
             if ($key->isNone()) {
                 continue;
             }
+            if ($value instanceof Arrayable) {
+                $value = $value->toArray();
+            }
             $output[$key->unwrap()] = $value;
         }
 

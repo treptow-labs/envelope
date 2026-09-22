@@ -101,4 +101,26 @@ class EnvelopeTest extends TestCase
 
         $this->assertEquals(['property' => date('Y-m-d'), 'new_property' => 'value'], $envelope->toArray());
     }
+
+    public function testToArrayWithNestedEnvelope()
+    {
+        $envelope = new class(Some::make('value'), Some::make(new class(Some::make('nested_value')) extends Envelope
+        {
+            public function __construct(public readonly Option $nested_property) {}
+        })) extends Envelope
+        {
+
+            public function __construct(
+                public readonly Option $property,
+                public readonly Option $nested_envelope
+            ) {}
+        };
+
+        $this->assertEquals([
+            'property' => 'value',
+            'nested_envelope' => [
+                'nested_property' => 'nested_value',
+            ],
+        ], $envelope->toArray());
+    }
 }

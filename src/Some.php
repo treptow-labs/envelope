@@ -41,7 +41,7 @@ class Some extends Option
     public function map(callable $callable): Option
     {
         $value = $callable($this->value);
-        if($value instanceof Option) {
+        if ($value instanceof Option) {
             return $value;
         }
 
